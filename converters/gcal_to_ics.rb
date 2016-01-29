@@ -21,6 +21,7 @@ class GcalToIcs
         e.ip_class    = event.visibility
         e.url         = event.html_link
         e.status      = event.status
+        e.rrule       = event.recurrence
         e.attendee    = Array(event.attendees).map { |attendee| "mailto:#{attendee.email}" }
         create_alarms(e, event.reminders, calendar.default_reminders)
       end
