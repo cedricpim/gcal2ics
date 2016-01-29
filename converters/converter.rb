@@ -11,7 +11,7 @@ class Converter
       SERVICE.calendars_list.each do |api_calendar|
         calendar = calendar(api_calendar)
         SERVICE.events_list(calendar.prodid).each do |api_event|
-          event(calendar, api_event)
+          event(api_calendar, calendar, api_event)
         end
         save(calendar, credentials['account'])
       end
