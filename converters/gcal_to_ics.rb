@@ -1,6 +1,8 @@
 require 'icalendar'
 
 class GcalToIcs
+  DATE_FORMAT = '%Y%m%d'
+
   class << self
     def create_calendar(calendar)
       Icalendar::Calendar.new.tap do |ical|
@@ -12,10 +14,10 @@ class GcalToIcs
     end
 
     def create_event(calendar, ical, event)
-      return if event.status == 'cancelled'
       ical.event do |e|
-        e.dtstart     = event.start.date_time || event.start.date.to_date
-        e.dtend       = event.end.date_time || event.end.date.to_date
+        e.uid         = event.id
+        e.dtstart     = parse_date(event.start || event.original_start_time, calendar.time_zone)
+        e.dtend       = parse_date(event.end, calendar.time_zone)
         e.summary     = event.summary
         e.description = event.description
         e.ip_class    = event.visibility
@@ -27,10 +29,24 @@ class GcalToIcs
       end
     end
 
-    def save(ical, account = nil)
-      filepath = File.join([DIR, account, "#{ical.x_wr_calname.first}.ics"].compact)
+    def save(ical, filename, account = nil)
+      filepath = File.join([DIR, account, filename].compact)
       FileUtils.mkpath(File.dirname(filepath))
       File.open(filepath, 'w') { |f| f.write(ical.to_ical) }
+    end
+
+    private
+
+    def parse_date(event_date, time_zone)
+      return unless event_date
+      time = event_date.date_time || event_date.date.try(:to_date)
+      if time.is_a?(DateTime)
+        Icalendar::Values::DateTime.new(time, tzid: time_zone)
+      elsif time.is_a?(Date)
+        Icalendar::Values::Date.new(time.strftime(DATE_FORMAT), tzid: time_zone)
+      else
+        fail UnknownDateFormatError, "Not recognizable date format: #{time.class}"
+      end
     end
 
     def create_alarms(event, reminders, default_reminders)
