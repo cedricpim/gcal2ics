@@ -14,7 +14,7 @@ class Converter
         send(method, api_calendar, credentials['account'])
       end
     end
-    FileUtils.mkpath(DIR) && directories.each { |dir| FileUtils.mv(dir, DIR) }
+    FileUtils.mkpath(DIR) && FileUtils.cp_r(directories, DIR)
   ensure
     directories.each { |dir| FileUtils.remove_dir(dir) }
   end
