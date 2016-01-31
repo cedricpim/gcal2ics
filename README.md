@@ -11,8 +11,8 @@ Copy `credentials.example.yml` to `credentials.yml` and replace the present valu
 
 ## Usage
 
-Command: `ruby calendar.rb`
+Command: `./calendar`
 
-Environment variable `DIR` can be defined as well to declare on which folder the calendars should be saved to like: `DIR=~/calendars ruby calendar.rb`. This will stored all downloaded calendars to `~/calendars`.
+Environment variable `DIR` can be defined as well to declare on which folder the calendars should be saved to like: `DIR=~/calendars ./calendar`. This will stored all downloaded calendars to `~/calendars`.
 
-Lastly, and this came with the need to make it work with Khal, it is possible to define the option `--separated-events` so that each event is stored on a different file. This can be used like: `ruby calendar.rb --separated-events`.
+Lastly, and this came with the need to make it work with Khal, it is possible to define the option `--separated-events` so that each event is stored on a different file. This can be used like: `./calendar --separated-events`.
