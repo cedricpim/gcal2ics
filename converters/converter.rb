@@ -14,6 +14,9 @@ class Converter
         send(method, api_calendar, credentials['account'])
       end
     end
+    FileUtils.mkpath(DIR) && directories.each { |dir| FileUtils.mv(dir, DIR) }
+  ensure
+    directories.each { |dir| FileUtils.remove_dir(dir) }
   end
 
   private
@@ -39,15 +42,21 @@ class Converter
     save(calendar, "#{calendar.x_wr_calname.first}.ics", account)
   end
 
+  def save(ical, filename, account = nil)
+    filepath = File.join([TMP, account, filename].compact)
+    FileUtils.mkpath(File.dirname(filepath))
+    File.open(filepath, 'w') { |f| f.write(ical.to_ical) }
+  end
+
+  def directories
+    Dir[File.join(TMP, '*')]
+  end
+
   def build_calendar(*args)
     converter_klass.create_calendar(*args)
   end
 
   def build_event(*args)
     converter_klass.create_event(*args)
-  end
-
-  def save(*args)
-    converter_klass.save(*args)
   end
 end

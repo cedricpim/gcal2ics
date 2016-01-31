@@ -29,12 +29,6 @@ class GcalToIcs
       end
     end
 
-    def save(ical, filename, account = nil)
-      filepath = File.join([DIR, account, filename].compact)
-      FileUtils.mkpath(File.dirname(filepath))
-      File.open(filepath, 'w') { |f| f.write(ical.to_ical) }
-    end
-
     private
 
     def parse_date(event_date, time_zone)
