@@ -11,6 +11,7 @@ DIR = ENV['DIR'] || File.join(Dir.pwd, 'calendars')
 CREDENTIALS = YAML.load_file('credentials.yml')
 SERVICE = GoogleCalendarService.new
 
-SEPARATED = ARGV[0] == '--separated-events'
+SEPARATED = ARGV.include?('--separated-events')
+VERBOSE   = ARGV.include?('-v')
 
 Converter.new(GcalToIcs).run!

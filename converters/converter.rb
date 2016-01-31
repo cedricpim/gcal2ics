@@ -9,6 +9,7 @@ class Converter
     CREDENTIALS.each do |credentials|
       SERVICE.authorize!(credentials)
       SERVICE.calendars_list.each do |api_calendar|
+        status(api_calendar) if VERBOSE
         method = ::SEPARATED ? :save_separated : :save_attached
         send(method, api_calendar, credentials['account'])
       end
@@ -16,6 +17,11 @@ class Converter
   end
 
   private
+
+  def status(api_calendar)
+    calendar_name = api_calendar.summary_override || api_calendar.summary
+    puts "Downloading calendar: #{calendar_name}"
+  end
 
   def save_separated(api_calendar, account)
     SERVICE.events_list(api_calendar.id).each do |api_event|
