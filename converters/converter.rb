@@ -14,12 +14,21 @@ class Converter
         send(method, api_calendar, credentials['account'])
       end
     end
-    FileUtils.mkpath(DIR) && FileUtils.cp_r(directories, DIR)
+    sync
   ensure
-    directories.each { |dir| FileUtils.remove_dir(dir) }
+    FileUtils.remove_dir(TMP)
   end
 
   private
+
+  def sync
+    FileUtils.mkpath(DIR)
+    directories.each do |directory|
+      new_dir = File.join(DIR, directory.sub(/^#{TMP}/, ''))
+      FileUtils.remove_dir(new_dir) if Dir.exist?(new_dir)
+    end
+    FileUtils.cp_r(directories, DIR)
+  end
 
   def status(api_calendar)
     calendar_name = api_calendar.summary_override || api_calendar.summary
@@ -49,10 +58,7 @@ class Converter
   end
 
   def directories
-    @directories ||= begin
-      nested = Dir[File.join(TMP, '*')]
-      nested.empty? ? Dir[File.join(TMP)] : nested
-    end
+    Dir[File.join(TMP, '**')]
   end
 
   def build_calendar(*args)

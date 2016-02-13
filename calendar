@@ -7,7 +7,7 @@ require_relative 'converters/gcal_to_ics'
 require_relative 'services/google_calendar_service'
 
 TMP = File.join(Dir.pwd, 'tmp', 'calendars')
-DIR = ENV['DIR'] || Dir.pwd
+DIR = ENV['DIR'] || File.join(Dir.pwd, 'calendars')
 
 CREDENTIALS = YAML.load_file('credentials.yml')
 SERVICE = GoogleCalendarService.new
