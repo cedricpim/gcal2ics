@@ -49,7 +49,10 @@ class Converter
   end
 
   def directories
-    Dir[File.join(TMP, '*')]
+    @directories ||= begin
+      nested = Dir[File.join(TMP, '*')]
+      nested.empty? ? Dir[File.join(TMP)] : nested
+    end
   end
 
   def build_calendar(*args)
