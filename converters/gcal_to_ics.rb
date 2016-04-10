@@ -14,6 +14,7 @@ class GcalToIcs
     end
 
     def create_event(calendar, ical, event)
+      return if event.status == 'cancelled'
       ical.event do |e|
         e.uid         = event.id
         e.dtstart     = parse_date(event.start || event.original_start_time, calendar.time_zone)

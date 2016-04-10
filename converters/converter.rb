@@ -11,7 +11,7 @@ class Converter
       SERVICE.calendars_list.each do |api_calendar|
         status(api_calendar) if VERBOSE
         method = ::SEPARATED ? :save_separated : :save_attached
-        send(method, api_calendar, credentials['account'])
+        __send__(method, api_calendar, credentials['account'])
       end
     end
     sync
@@ -39,7 +39,7 @@ class Converter
     SERVICE.events_list(api_calendar.id).each do |api_event|
       calendar = build_calendar(api_calendar)
       event = build_event(api_calendar, calendar, api_event)
-      save(calendar, "#{event.uid}.ics", account)
+      save(calendar, "#{event.uid}.ics", account) if calendar && event
     end
   end
 
@@ -48,7 +48,7 @@ class Converter
     SERVICE.events_list(api_calendar.id).each do |api_event|
       build_event(api_calendar, calendar, api_event)
     end
-    save(calendar, "#{calendar.x_wr_calname.first}.ics", account)
+    save(calendar, "#{calendar.x_wr_calname.first}.ics", account) if calendar
   end
 
   def save(ical, filename, account = nil)
